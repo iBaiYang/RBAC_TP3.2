@@ -24,4 +24,4 @@ phpunit.phar
 /phpunit.xml
 
 #
-!Application/Runtime/*
+Application/Runtime/*
