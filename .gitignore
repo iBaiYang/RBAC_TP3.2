@@ -23,6 +23,6 @@ phpunit.phar
 # local phpunit config
 /phpunit.xml
 
-#
+# ignore Runtime
 /Application/Runtime
-Application/Runtime/Logs/Home/*
+# Application/Runtime/Logs/Home/*  is wrong
