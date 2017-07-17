@@ -24,4 +24,5 @@ phpunit.phar
 /phpunit.xml
 
 #
-Application/Runtime/*
+/Application/Runtime
+Application/Runtime/Logs/Home/*
