@@ -18,9 +18,9 @@ if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 define('APP_DEBUG', true);
 
 // 自动生成Admin模块并绑定到当前入口文件
-define('BIND_MODULE', 'Admin');
-define('BUILD_CONTROLLER_LIST', 'Index,Common');
-define('BUILD_MODEL_LIST', 'Admin');
+//define('BIND_MODULE', 'Admin');
+//define('BUILD_CONTROLLER_LIST', 'Index,Common');  // 这里后面字符串中间不能出现空格，不然生成的文件名前有空格
+//define('BUILD_MODEL_LIST', 'Admin');
 
 // 定义应用目录
 define('APP_PATH', '../Application/');
