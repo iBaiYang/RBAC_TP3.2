@@ -1,8 +1,73 @@
 <?php
 namespace Admin\Controller;
-use Think\Controller;
-class IndexController extends Controller {
-    public function index(){
-        $this->show('<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} body{ background: #fff; font-family: "微软雅黑"; color: #333;font-size:24px} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.8em; font-size: 36px } a,a:hover{color:blue;}</style><div style="padding: 24px 48px;"> <h1>:)</h1><p>欢迎使用 <b>ThinkPHP</b>！</p><br/>版本 V{$Think.version}</div><script type="text/javascript" src="http://ad.topthink.com/Public/static/client.js"></script><thinkad id="ad_55e75dfae343f5a1"></thinkad><script type="text/javascript" src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script>','utf-8');
+
+use Component\AdminController;
+
+/**
+ * Admin后台框架
+ * Class IndexController
+ * @package Admin\Controller
+ *
+ */
+class IndexController extends AdminController
+{
+    /**
+     * 首页frameset
+     * html框架集成方法
+     */
+    public function index ()
+    {
+//        echo 123;
+        $this->display();
+    }
+
+    /**
+     * 后台头部页面
+     */
+    public function top ()
+    {
+        $this->display();
+    }
+
+    /**
+     * 左边页面
+     */
+    public function left ()
+    {
+        // 根据session用户id信息查询角色id信息
+        $sql = "select * from sw_manager where mg_id=".$_SESSION['mg_id'];
+        $minfo = D()->query($sql);
+        $role_id = $minfo[0]['mg_role_id'];
+        // 根据角色信息获得权限ids的信息
+        $sql = "select * from sw_role where role_id=".$role_id;
+        $rinfo = D()->query($sql);
+        $auth_ids = $rinfo[0]['role_auth_ids'];
+        // 根据$auth_ids查询全部拥有的权限信息
+        // ① 获得顶级权限
+        $sql = "select * from sw_auth where auth_level = 0 ";
+        // 如果是admin管理员要现实全部权限
+        if ( $_SESSION['mg_id'] != 1 ) {
+            $sql .= " and auth_id in ($auth_ids)";
+        }
+        $p_info = D()->query($sql);
+        // ② 获得次顶级权限
+        $sql = "select * from sw_auth where auth_level = 1";
+        // 如果是admin管理员要现实全部权限
+        if ( $_SESSION['mg_id'] != 1 ) {
+            $sql .= " and auth_id in ($auth_ids)";
+        }
+        $s_info = D()->query($sql);
+
+        $this -> assign('pauth_info',$p_info);
+        $this -> assign('sauth_info',$s_info);
+        $this->display();
+    }
+
+    /**
+     * 右边页面
+     */
+    public function right ()
+    {
+        $this->display();
     }
 }
