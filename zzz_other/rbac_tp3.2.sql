@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2017-07-18 21:15:24
+Date: 2017-07-19 18:33:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,6 +21,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `db_admin_group`;
 CREATE TABLE `db_admin_group` (
   `id` int(4) NOT NULL AUTO_INCREMENT COMMENT '用户组主键',
+  `group_pid` int(4) NOT NULL DEFAULT '0' COMMENT '上级用户组id',
   `group_name` varchar(14) NOT NULL COMMENT '用户组名称',
   `remark` varchar(200) NOT NULL COMMENT '用户组说明',
   `rank` int(2) NOT NULL COMMENT '用户组排序',
@@ -58,11 +59,13 @@ CREATE TABLE `db_admin_menu` (
   `remark` varchar(200) NOT NULL COMMENT '菜单说明',
   `rank` int(11) NOT NULL COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='大类菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='大类菜单表';
 
 -- ----------------------------
 -- Records of db_admin_menu
 -- ----------------------------
+INSERT INTO `db_admin_menu` VALUES ('1', '个人中心', 'self', '个人的信息管理', '10');
+INSERT INTO `db_admin_menu` VALUES ('2', '菜单与权限管理', 'menu,power', '菜单与权限的相关信息', '20');
 
 -- ----------------------------
 -- Table structure for db_admin_power
@@ -74,6 +77,7 @@ CREATE TABLE `db_admin_power` (
   `power_name` varchar(20) NOT NULL COMMENT '权限名称',
   `type` int(2) NOT NULL COMMENT '操作类型： 1 菜单类别 ； 2 操作控制； 3 其他类别',
   `mca` varchar(100) NOT NULL DEFAULT '' COMMENT 'module-controller-action',
+  `remark` varchar(120) DEFAULT '' COMMENT '权限备注',
   `rank` int(2) NOT NULL COMMENT '排序',
   PRIMARY KEY (`id`),
   UNIQUE KEY `mca` (`mca`) USING BTREE
