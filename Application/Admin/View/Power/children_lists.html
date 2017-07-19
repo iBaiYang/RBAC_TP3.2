@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-    <title>菜单列表</title>
+    <title>权限列表</title>
 
     <link href="/Public/Admin/css/mine.css" type="text/css" rel="stylesheet" />
     <style>
@@ -31,9 +31,9 @@
 <body>
     <div class="div_head">
         <span>
-            <span style="float: left;">当前位置是：菜单管理-》菜单列表</span>
+            <span style="float: left;">当前位置是：菜单管理-》菜单列表-》权限列表</span>
             <span style="float: right; margin-right: 8px; font-weight: bold;">
-                <a style="text-decoration: none;" href="{:U('menu/add')}">【添加菜单】</a>
+                <a style="text-decoration: none;" id="power_add">【添加权限】</a>
             </span>
         </span>
     </div>
@@ -43,7 +43,7 @@
             <tbody>
                 <tr style="font-weight: bold;">
                     <td><input id="checkall" value="" type="checkbox">全选</td>
-                    <td>菜单名称</td>
+                    <td>权限名称</td>
                     <td>菜单所属控制器</td>
                     <td>菜单备注</td>
                     <td>排序</td>
@@ -72,10 +72,28 @@
 <script type="text/javascript" src="/Public/js/layer/layer.js"></script>
 <script>
     $(document).ready(function(){
-        $('.qxgl').click(function(){
-            var menu_id = $(this).data('id');
-            var children_url = "{:U('Power/children_lists', array('pid'=>''), '')}"+'/'+menu_id;
-            self.location = children_url;
+        $('#power_add').click(function(){
+            layer.open({
+                type: 1,
+                title: '添加权限',
+//                closeBtn: false,
+//                area: '300px;',
+                area: ['320px', '300px'], //宽高
+                shade: 0.4,
+                id: 'LAY_layuipro',  // 设定一个id，防止重复弹出
+                resize: true,
+                btn: ['确认', '取消'],
+                btnAlign: 'c',
+                moveType: 1,  // 拖拽模式，0或者1
+                content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">内容<br>内容</div>',
+                success: function(layero){
+                    var btn = layero.find('.layui-layer-btn');
+                    btn.find('.layui-layer-btn0').attr({
+//                        href: 'http://www.layui.com/',
+//                        target: '_blank'
+                    });
+                }
+            });
         });
     });
 </script>
