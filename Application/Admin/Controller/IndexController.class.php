@@ -15,16 +15,15 @@ class IndexController extends AdminController
      * 首页frameset
      * html框架集成方法
      */
-    public function index ()
+    public function index()
     {
-//        echo 123;
         $this->display();
     }
 
     /**
      * 后台头部页面
      */
-    public function top ()
+    public function top()
     {
         $this->display();
     }
@@ -32,9 +31,9 @@ class IndexController extends AdminController
     /**
      * 左边页面
      */
-    public function left ()
+    public function left()
     {
-        // 根据session用户id信息查询角色id信息
+       /* // 根据session用户id信息查询角色id信息
         $sql = "select * from sw_manager where mg_id=".$_SESSION['mg_id'];
         $minfo = D()->query($sql);
         $role_id = $minfo[0]['mg_role_id'];
@@ -59,14 +58,14 @@ class IndexController extends AdminController
         $s_info = D()->query($sql);
 
         $this -> assign('pauth_info',$p_info);
-        $this -> assign('sauth_info',$s_info);
+        $this -> assign('sauth_info',$s_info);*/
         $this->display();
     }
 
     /**
      * 右边页面
      */
-    public function right ()
+    public function right()
     {
         $this->display();
     }

@@ -63,7 +63,8 @@
                 <ul>
                     <li class="user_bottom_l"></li>
                     <li class="user_bottom_c"><span style="margin-top: 40px;"></span> </li>
-                    <li class="user_bottom_r"></li></ul>
+                    <li class="user_bottom_r"></li>
+                </ul>
             </dd>
         </dl>
     </div>
@@ -77,11 +78,18 @@
 <script type="text/javascript" src="/Public/js/layer/layer.js"></script>
 <script>
     $(document).ready(function(){
+        // 防止登录页面出现在frame里面
+        if ( top.location !== self.location ) {
+            top.location.href = self.location.href;
+        }
+
+        // 验证码点击刷新
         $('#verifyImg').click(function(){
             var timestamp = new Date().getTime();
             $(this).attr('src',"{:U('Site/verifyImg')}?" +timestamp );
         });
 
+        // 点击登录
         $('.submit_btn').click(function(){
             var user_name = $("input[name='user_name']").val();
             if ( user_name == '' ) {

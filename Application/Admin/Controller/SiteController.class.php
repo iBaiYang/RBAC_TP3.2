@@ -27,10 +27,17 @@ class SiteController extends Controller
                 $this->error('验证码错误');
             }
 
-
-
-
-            $this->success('登录成功');
+//            $model_admin_user = new \Admin\Model\AdminUserModel();
+            $model_admin_user = D('AdminUser');
+            $result = $model_admin_user->checkUserLogin( $user_name, $password );
+            if ( !$result ) {
+                $this->error('登录异常，请刷新页面后重新登录');
+            } else {
+                session('admin_user_id', 1);
+                session('admin_user_name', $user_name);
+                session('admin_user_group', 1);
+                $this->success('登录成功');
+            }
         }
     }
 
