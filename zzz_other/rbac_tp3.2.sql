@@ -10,50 +10,17 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2017-07-19 18:33:23
+Date: 2017-07-20 18:14:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for db_admin_group
--- ----------------------------
-DROP TABLE IF EXISTS `db_admin_group`;
-CREATE TABLE `db_admin_group` (
-  `id` int(4) NOT NULL AUTO_INCREMENT COMMENT '用户组主键',
-  `group_pid` int(4) NOT NULL DEFAULT '0' COMMENT '上级用户组id',
-  `group_name` varchar(14) NOT NULL COMMENT '用户组名称',
-  `remark` varchar(200) NOT NULL COMMENT '用户组说明',
-  `rank` int(2) NOT NULL COMMENT '用户组排序',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `group_name` (`group_name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户组表';
-
--- ----------------------------
--- Records of db_admin_group
--- ----------------------------
-
--- ----------------------------
--- Table structure for db_admin_group_power
--- ----------------------------
-DROP TABLE IF EXISTS `db_admin_group_power`;
-CREATE TABLE `db_admin_group_power` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL COMMENT '管理员用户组id',
-  `power_id` int(11) NOT NULL COMMENT '权限表id',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户组权限表';
-
--- ----------------------------
--- Records of db_admin_group_power
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for db_admin_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `db_admin_menu`;
 CREATE TABLE `db_admin_menu` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(3) NOT NULL AUTO_INCREMENT,
   `menu_name` varchar(20) NOT NULL COMMENT '菜单名',
   `controllers` varchar(200) NOT NULL COMMENT '包含的控制器',
   `remark` varchar(200) NOT NULL COMMENT '菜单说明',
@@ -72,7 +39,7 @@ INSERT INTO `db_admin_menu` VALUES ('2', '菜单与权限管理', 'menu,power', 
 -- ----------------------------
 DROP TABLE IF EXISTS `db_admin_power`;
 CREATE TABLE `db_admin_power` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(6) NOT NULL AUTO_INCREMENT,
   `menu_id` int(3) NOT NULL COMMENT '菜单id, menu表的主键',
   `power_name` varchar(20) NOT NULL COMMENT '权限名称',
   `type` int(2) NOT NULL COMMENT '操作类型： 1 菜单类别 ； 2 操作控制； 3 其他类别',
@@ -85,6 +52,39 @@ CREATE TABLE `db_admin_power` (
 
 -- ----------------------------
 -- Records of db_admin_power
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for db_admin_role
+-- ----------------------------
+DROP TABLE IF EXISTS `db_admin_role`;
+CREATE TABLE `db_admin_role` (
+  `id` int(4) NOT NULL AUTO_INCREMENT COMMENT '角色主键',
+  `role_pid` int(4) NOT NULL DEFAULT '0' COMMENT '上级角色id',
+  `role_name` varchar(14) NOT NULL COMMENT '角色名称',
+  `remark` varchar(200) NOT NULL COMMENT '角色说明',
+  `rank` int(2) NOT NULL COMMENT '角色排序',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `group_name` (`role_name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员角色表';
+
+-- ----------------------------
+-- Records of db_admin_role
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for db_admin_role_power
+-- ----------------------------
+DROP TABLE IF EXISTS `db_admin_role_power`;
+CREATE TABLE `db_admin_role_power` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(4) NOT NULL COMMENT '管理员角色id',
+  `power_id` int(6) NOT NULL COMMENT '权限表id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员角色权限表';
+
+-- ----------------------------
+-- Records of db_admin_role_power
 -- ----------------------------
 
 -- ----------------------------
@@ -107,32 +107,32 @@ CREATE TABLE `db_admin_user` (
 INSERT INTO `db_admin_user` VALUES ('1', 'admin', '123456', null, null);
 
 -- ----------------------------
--- Table structure for db_admin_user_group
--- ----------------------------
-DROP TABLE IF EXISTS `db_admin_user_group`;
-CREATE TABLE `db_admin_user_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL COMMENT '管理员用户ID, admin_user表的主键',
-  `group_id` int(11) NOT NULL COMMENT '管理员用户组id, admin_group表的主键',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户所属用户组表';
-
--- ----------------------------
--- Records of db_admin_user_group
--- ----------------------------
-
--- ----------------------------
 -- Table structure for db_admin_user_power
 -- ----------------------------
 DROP TABLE IF EXISTS `db_admin_user_power`;
 CREATE TABLE `db_admin_user_power` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL COMMENT '管理员用户id',
-  `power_id` int(11) NOT NULL COMMENT '权限表id',
+  `power_id` int(6) NOT NULL COMMENT '权限表id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户权限表';
 
 -- ----------------------------
 -- Records of db_admin_user_power
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for db_admin_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `db_admin_user_role`;
+CREATE TABLE `db_admin_user_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL COMMENT '管理员用户ID, admin_user表的主键',
+  `role_id` int(4) NOT NULL COMMENT '管理员角色id, admin_role表的主键',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户所属角色表';
+
+-- ----------------------------
+-- Records of db_admin_user_role
 -- ----------------------------
 SET FOREIGN_KEY_CHECKS=1;

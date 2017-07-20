@@ -44,13 +44,14 @@ class SiteController extends Controller
     /**
      * 制作专门方法实现验证码生成
      */
-    function verifyImg ()
+    function verifyImg()
     {
         // 走自动加载Think.class.php  autoload()
         $config = array(
             'imageH'    => 24,              // 验证码图片高度
             'imageW'    => 105,             // 验证码图片宽度
             'fontSize'  => 14,              // 验证码字体大小
+            'codeSet'   => '0123456789',
             'fontttf'   => '4.ttf',         // 验证码字体，不设置随机获取
             'length'    => 4,               // 验证码位数
             'useNoise'  => false,           // 关闭验证码杂点

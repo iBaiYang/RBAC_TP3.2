@@ -85,14 +85,28 @@
                 btn: ['确认', '取消'],
                 btnAlign: 'c',
                 moveType: 1,  // 拖拽模式，0或者1
-                content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">内容<br>内容</div>',
-                success: function(layero){
+                content: '<div><input ></div></div><div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">内容<br>内容</div>',
+                success: function(layero, index){  // 弹层加载成功后执行
                     var btn = layero.find('.layui-layer-btn');
                     btn.find('.layui-layer-btn0').attr({
 //                        href: 'http://www.layui.com/',
 //                        target: '_blank'
                     });
-                }
+                },
+                yes: function(index, layero){
+                    //do something
+//                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                },
+                btn2: function(index, layero){
+                    //按钮【按钮二】的回调
+                    if(confirm('确定要关闭么')){  // 只有当点击confirm框的确定时，该层才会关闭
+                        layer.close(index)
+                    }
+                    return false;
+                },
+                cancel: function(index, layero){
+                    layer.close(index);
+                },
             });
         });
     });
