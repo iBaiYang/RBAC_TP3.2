@@ -34,7 +34,7 @@ class AdminerController extends AdminController
     public function add()
     {
         if ( !$_POST ) {
-            $this->error('操作错误');
+            $this->display();
         } else {
             $menu_id = trim(I('post.menu_id','','int'));
             if ( empty($menu_id) ) {
