@@ -12,10 +12,10 @@
                 </td>
                 <td style="font-weight: bold; color: #fff; padding-top: 20px" align=middle>
                     当前用户：{$Think.session.admin_user_name} &nbsp;&nbsp;
-                    <a style="color: #fff" href="" target=right>修改口令</a> &nbsp;&nbsp;
+                    <a style="color: #fff" href="{:U('Self/change_pwd')}" target=right>修改口令</a> &nbsp;&nbsp;
                     <a style="color: #fff"
                        onclick="if (confirm('确定要退出吗？')) return true; else return false;"
-                       href="{:U('Index/logout')}" target=_top>
+                       href="{:U('Site/logout')}" target=_top>
                         退出系统
                     </a>
                 </td>

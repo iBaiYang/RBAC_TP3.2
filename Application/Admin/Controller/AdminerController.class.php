@@ -4,11 +4,11 @@ namespace Admin\Controller;
 use Component\AdminController;
 
 /**
- * 权限管理控制器
- * Class PowerController
+ * 管理员管理控制器
+ * Class AdminerController
  * @package Admin\Controller
  */
-class PowerController extends AdminController
+class AdminerController extends AdminController
 {
     /**
      * 权限列表
@@ -29,7 +29,7 @@ class PowerController extends AdminController
     }
 
     /**
-     * 权限添加
+     * 管理员添加
      */
     public function add()
     {

@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-    <title>菜单列表</title>
+    <title>角色列表</title>
 
     <link href="/Public/Admin/css/mine.css" type="text/css" rel="stylesheet" />
     <style>
@@ -31,9 +31,9 @@
 <body>
     <div class="div_head">
         <span>
-            <span style="float: left;">当前位置是：菜单管理-》菜单列表</span>
+            <span style="float: left;">当前位置是：角色管理-》角色列表</span>
             <span style="float: right; margin-right: 8px; font-weight: bold;">
-                <a style="text-decoration: none;" href="{:U('Menu/add')}">【添加菜单】</a>
+                <a style="text-decoration: none;" href="{:U('Role/add')}">【添加角色】</a>
             </span>
         </span>
     </div>
@@ -43,17 +43,19 @@
             <tbody>
                 <tr style="font-weight: bold;">
                     <td><input id="checkall" value="" type="checkbox">全选</td>
-                    <td>菜单名称</td>
-                    <td>菜单所属控制器</td>
-                    <td>菜单备注</td>
+                    <td>父角色名称</td>
+                    <td>角色名称</td>
+                    <td>角色级别</td>
+                    <td>角色说明</td>
                     <td>排序</td>
                     <td align="center">操作</td>
                 </tr>
                 <volist name="lists" id="vo">
                     <tr>
                         <td><input class="checkboxs" value="{$vo.id}" type="checkbox"></td>
-                        <td>{$vo.menu_name}</td>
-                        <td>{$vo.controllers}</td>
+                        <td>{$vo.role_p_name}</td>
+                        <td>{$vo.role_name}</td>
+                        <td>{$vo.level}</td>
                         <td>{$vo.remark}</td>
                         <td>{$vo.rank}</td>
                         <td>

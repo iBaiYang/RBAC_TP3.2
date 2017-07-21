@@ -34,6 +34,7 @@
             <span style="float: left;">当前位置是：菜单管理-》菜单列表-》权限列表</span>
             <span style="float: right; margin-right: 8px; font-weight: bold;">
                 <a style="text-decoration: none;" id="power_add">【添加权限】</a>
+                <input type="hidden" name="menu_id" value="{$menu_id}">
             </span>
         </span>
     </div>
@@ -43,9 +44,11 @@
             <tbody>
                 <tr style="font-weight: bold;">
                     <td><input id="checkall" value="" type="checkbox">全选</td>
+                    <td>菜单名称</td>
                     <td>权限名称</td>
-                    <td>菜单所属控制器</td>
-                    <td>菜单备注</td>
+                    <td>权限类型</td>
+                    <td>权限MCA</td>
+                    <td>权限备注</td>
                     <td>排序</td>
                     <td align="center">操作</td>
                 </tr>
@@ -53,12 +56,13 @@
                     <tr>
                         <td><input class="checkboxs" value="{$vo.id}" type="checkbox"></td>
                         <td>{$vo.menu_name}</td>
-                        <td>{$vo.controllers}</td>
+                        <td>{$vo.power_name}</td>
+                        <td>{$vo.type_txt}</td>
+                        <td>{$vo.mca}</td>
                         <td>{$vo.remark}</td>
                         <td>{$vo.rank}</td>
                         <td>
                             <a data-id="{$vo.id}" class="btn edit">修改</a>
-                            <a data-id="{$vo.id}" class="btn qxgl">权限管理</a>
                             <a data-id="{$vo.id}" class="btn delete">删除</a>
                         </td>
                     </tr>
@@ -72,20 +76,25 @@
 <script type="text/javascript" src="/Public/js/layer/layer.js"></script>
 <script>
     $(document).ready(function(){
+        // 添加权限
         $('#power_add').click(function(){
             layer.open({
                 type: 1,
                 title: '添加权限',
-//                closeBtn: false,
-//                area: '300px;',
-                area: ['320px', '300px'], //宽高
+                area: ['500px', '360px'], //宽高
                 shade: 0.4,
                 id: 'LAY_layuipro',  // 设定一个id，防止重复弹出
                 resize: true,
                 btn: ['确认', '取消'],
                 btnAlign: 'c',
                 moveType: 1,  // 拖拽模式，0或者1
-                content: '<div><input ></div></div><div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">内容<br>内容</div>',
+                content: '<div style="padding: 20px; line-height: 42px; background-color: #393D49; color: #fff; font-weight: 300;">' +
+                        '权限名称：<input name="power_name" type="text"><br>' +
+                        '权限类型：<select name="type"><option value="1">菜单类别</option><option value="2">操作控制</option><option value="3">其他类别</option></select><br>' +
+                        '权限MCA：<input name="mca" type="text"><br>' +
+                        '权限备注：<input name="remark" type="text"><br>' +
+                        '排序：<input name="rank" type="text"><br>' +
+                        '</div>',
                 success: function(layero, index){  // 弹层加载成功后执行
                     var btn = layero.find('.layui-layer-btn');
                     btn.find('.layui-layer-btn0').attr({
@@ -94,8 +103,84 @@
                     });
                 },
                 yes: function(index, layero){
-                    //do something
-//                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    var menu_id = $("input[name='menu_id']").val();
+                    if ( menu_id == '' ) {
+                        layer.close(index);  // 如果设定了yes回调，需进行手工关闭
+                        layer.msg( '参数丢失，即将返回菜单列表' );
+                        setTimeout(function(){
+                            self.location = "{:U('Menu/lists')}";
+                        },3000)
+                    }
+
+                    var power_name = $("input[name='power_name']").val();
+                    if ( power_name == '' ) {
+                        layer.tips('权限名称不能为空', "input[name='power_name']", {
+                            tips: [2, '#3595CC'],
+                            time: 4000
+                        });
+                        return false;
+                    }
+
+                    var type = $("select[name='type']").val();
+                    if ( type == '' ) {
+                        layer.tips('请选择权限类型', "select[name='type']", {
+                            tips: [2, '#3595CC'],
+                            time: 4000
+                        });
+                        return false;
+                    }
+
+                    var mca = $("input[name='mca']").val();
+                    if ( mca == '' ) {
+                        layer.tips('权限MCA不能为空', "input[name='mca']", {
+                            tips: [2, '#3595CC'],
+                            time: 4000
+                        });
+                        return false;
+                    }
+
+                    var remark = $("input[name='remark']").val();
+
+                    var rank = $("input[name='rank']").val();
+                    if ( rank == '' ) {
+                        layer.tips('权限排序不能为空', "input[name='rank']", {
+                            tips: [2, '#3595CC'],
+                            time: 4000
+                        });
+                        return false;
+                    }
+
+                    var postdata = {};
+                    postdata['menu_id'] = menu_id;
+                    postdata['power_name'] = power_name;
+                    postdata['type'] = type;
+                    postdata['mca'] = mca;
+                    postdata['remark'] = remark;
+                    postdata['rank'] = rank;
+
+                    $.ajax({
+                        url: "{:U('Power/add')}",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postdata,
+                        success:function(data){
+                            if ( data.status == 1 ) {
+                                layer.close(index);
+                                layer.msg( '添加成功' );
+                                self.location.reload();
+                            } else  {
+                                if ( data.status == 2 ) {
+                                    layer.close(index);
+                                }
+                                layer.msg( data.info );
+                                if ( data.url != '' ) {
+                                    setTimeout(function(){
+                                        self.location = data.url;
+                                    },3000)
+                                }
+                            }
+                        }
+                    });
                 },
                 btn2: function(index, layero){
                     //按钮【按钮二】的回调

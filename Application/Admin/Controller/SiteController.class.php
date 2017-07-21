@@ -35,10 +35,21 @@ class SiteController extends Controller
             } else {
                 session('admin_user_id', 1);
                 session('admin_user_name', $user_name);
-                session('admin_user_group', 1);
+                session('admin_user_role', array(1,2,3,8,6));
+//                session('admin_user_role', 1);
                 $this->success('登录成功');
             }
         }
+    }
+
+    public function logout()
+    {
+        session('admin_user_id', null);
+        session('admin_user_name', null);
+        session('admin_user_role', null);
+        /*session(null);  // 清空当前的session
+        session('[destroy]');  // 销毁session*/
+        header("location:".U('Site/login'));
     }
 
     /**
