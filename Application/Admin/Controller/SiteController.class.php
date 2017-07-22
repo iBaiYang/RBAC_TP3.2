@@ -29,14 +29,11 @@ class SiteController extends Controller
 
 //            $model_admin_user = new \Admin\Model\AdminUserModel();
             $model_admin_user = D('AdminUser');
-            $result = $model_admin_user->checkUserLogin( $user_name, $password );
-            if ( !$result ) {
+            $user_info = $model_admin_user->checkUserLogin( $user_name, $password );
+            if ( empty($user_info) ) {
                 $this->error('登录异常，请刷新页面后重新登录');
             } else {
-                session('admin_user_id', 1);
-                session('admin_user_name', $user_name);
-                session('admin_user_role', array(1,2,3,8,6));
-//                session('admin_user_role', 1);
+                session('admin_user_id', $user_info['id'] );
                 $this->success('登录成功');
             }
         }
@@ -45,8 +42,6 @@ class SiteController extends Controller
     public function logout()
     {
         session('admin_user_id', null);
-        session('admin_user_name', null);
-        session('admin_user_role', null);
         /*session(null);  // 清空当前的session
         session('[destroy]');  // 销毁session*/
         header("location:".U('Site/login'));

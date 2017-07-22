@@ -8,7 +8,7 @@
 <body>
     <div class="div_head">
         <span>
-            <span style="float:left">当前位置是：菜单管理-》添加菜单信息</span>
+            <span style="float:left">当前位置是：管理员管理-》添加管理员信息</span>
             <span style="float:right;margin-right: 8px;font-weight: bold">
                 <a style="text-decoration: none" href="{$smarty.const.__MODULE__}/Goods/showlist">【返回】</a>
             </span>
@@ -18,20 +18,20 @@
         <form action="" method="post">
         <table border="1" width="100%" class="table_a">
             <tr>
-                <td>菜单名称</td>
-                <td><input type="text" name="menu_name" /></td>
+                <td>用户名</td>
+                <td><input type="text" name="user_name" /></td>
             </tr>
             <tr>
-                <td>菜单所属控制器</td>
-                <td><input type="text" name="controllers" /></td>
+                <td>密码</td>
+                <td><input type="text" name="password" /></td>
             </tr>
             <tr>
-                <td>菜单备注</td>
-                <td><input type="text" name="remark" /></td>
-            </tr>
-            <tr>
-                <td>排序</td>
-                <td><input type="text" name="rank" /></td>
+                <td>选择角色</td>
+                <td>
+                    <select name="">
+                        <option value=""></option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td colspan="2" align="center">
@@ -48,53 +48,36 @@
 <script>
     $(document).ready(function(){
         $('.submit_btn').click(function(){
-            var menu_name = $("input[name='menu_name']").val();
-            if ( menu_name == '' ) {
-//                layer.tips('菜单名称不能为空', "input[name='menu_name']");
-                layer.tips('菜单名称不能为空', "input[name='menu_name']", {
-                    tips: [2, '#3595CC'],
-                    time: 4000
-                });
-//                layer.msg('菜单名称不能为空');
-                return false;
-            }
-
-            var controllers = $("input[name='controllers']").val();
-            if ( controllers == '' ) {
-                layer.tips('菜单所属控制器不能为空', "input[name='controllers']", {
+            var user_name = $("input[name='user_name']").val();
+            if ( user_name == '' ) {
+                layer.tips('用户名不能为空', "input[name='user_name']", {
                     tips: [2, '#3595CC'],
                     time: 4000
                 });
                 return false;
             }
 
-            var remark = $("input[name='remark']").val();
-
-            var rank = $("input[name='rank']").val();
-            if ( rank == '' ) {
-                layer.tips('排序不能为空', "input[name='rank']", {
+            var password = $("input[name='password']").val();
+            if ( password == '' ) {
+                layer.tips('密码不能为空', "input[name='password']", {
                     tips: [2, '#3595CC'],
                     time: 4000
                 });
                 return false;
             }
-
 
             var postdata = {};
-            postdata['menu_name'] = menu_name;
-            postdata['controllers'] = controllers;
-            postdata['remark'] = remark;
-            postdata['rank'] = rank;
+            postdata['user_name'] = user_name;
+            postdata['password'] = password;
 
             $.ajax({
-                url: "{:U('Menu/add')}",
+                url: "{:U('Adminer/add')}",
                 type: 'POST',
                 dataType: 'json',
                 data: postdata,
                 success:function(data){
                     if ( data.status == 1 ) {
-//                        window.parent.right.location.href = "{:U('Menu/lists')}";
-                        self.location = "{:U('Menu/lists')}";
+                        self.location = "{:U('Adminer/lists')}";
                     } else {
                         layer.msg( data.info );
                         if ( data.url != '' ) {

@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-    <title>权限列表</title>
+    <title>角色列表</title>
 
     <link href="/Public/Admin/css/mine.css" type="text/css" rel="stylesheet" />
     <style>
@@ -31,10 +31,10 @@
 <body>
     <div class="div_head">
         <span>
-            <span style="float: left;">当前位置是：菜单管理-》菜单列表-》权限列表</span>
+            <span style="float: left;">当前位置是：角色管理-》角色列表</span>
             <span style="float: right; margin-right: 8px; font-weight: bold;">
-                <a style="text-decoration: none;" id="power_add">【添加权限】</a>
-                <input type="hidden" name="menu_id" value="{$menu_id}">
+                <a style="text-decoration: none;" href="#" id="role_add" data-id="{$role_pid}">【添加角色】</a>
+                <a style="text-decoration: none;" href="{:U('Role/children_lists', array('pid'=>$back_role_pid) )}">【返回】</a>
             </span>
         </span>
     </div>
@@ -44,25 +44,25 @@
             <tbody>
                 <tr style="font-weight: bold;">
                     <td><input id="checkall" value="" type="checkbox">全选</td>
-                    <td>菜单名称</td>
-                    <td>权限名称</td>
-                    <td>权限类型</td>
-                    <td>权限MCA</td>
-                    <td>权限备注</td>
+                    <td>角色名称</td>
+                    <td>父角色名称</td>
+                    <td>角色级别</td>
+                    <td>角色说明</td>
                     <td>排序</td>
                     <td align="center">操作</td>
                 </tr>
                 <volist name="lists" id="vo">
                     <tr>
                         <td><input class="checkboxs" value="{$vo.id}" type="checkbox"></td>
-                        <td>{$vo.menu_name}</td>
-                        <td>{$vo.power_name}</td>
-                        <td>{$vo.type_txt}</td>
-                        <td>{$vo.mca}</td>
+                        <td>{$vo.role_name}</td>
+                        <td>{$vo.role_p_name}</td>
+                        <td>{$vo.level}</td>
                         <td>{$vo.remark}</td>
                         <td>{$vo.rank}</td>
                         <td>
                             <a data-id="{$vo.id}" class="btn edit">修改</a>
+                            <a data-id="{$vo.id}" class="btn power_edit">权限</a>
+                            <a data-id="{$vo.id}" class="btn sonlists">子角色管理</a>
                             <a data-id="{$vo.id}" class="btn delete">删除</a>
                         </td>
                     </tr>
@@ -76,12 +76,19 @@
 <script type="text/javascript" src="/Public/js/layer/layer.js"></script>
 <script>
     $(document).ready(function(){
-        // 添加权限
-        $('#power_add').click(function(){
+        // 子角色管理
+        $('.sonlists').click(function(){
+            var role_id = $(this).data('id');
+            var children_url = "{:U('Role/children_lists', '', '')}"+'/pid/'+role_id;
+            self.location = children_url;
+        });
+
+        // 添加角色
+        $('#role_add').click(function(){
             layer.open({
                 type: 1,
-                title: '添加权限',
-                area: ['500px', '360px'], //宽高
+                title: '添加角色',
+                area: ['360px', '268px'], //宽高
                 shade: 0.4,
                 id: 'LAY_layuipro',  // 设定一个id，防止重复弹出
                 resize: true,
@@ -89,50 +96,23 @@
                 btnAlign: 'c',
                 moveType: 1,  // 拖拽模式，0或者1
                 content: '<div style="padding: 20px; line-height: 42px; background-color: #393D49; color: #fff; font-weight: 300;">' +
-                        '权限名称：<input name="power_name" type="text"><br>' +
-                        '权限类型：<select name="type"><option value="1">菜单类别</option><option value="2">操作控制</option><option value="3">其他类别</option></select><br>' +
-                        '权限MCA：<input name="mca" type="text"><br>' +
-                        '权限备注：<input name="remark" type="text"><br>' +
-                        '排序：<input name="rank" type="text"><br>' +
-                        '</div>',
-                success: function(layero, index){  // 弹层加载成功后执行
-                    var btn = layero.find('.layui-layer-btn');
-                    btn.find('.layui-layer-btn0').attr({
-//                        href: 'http://www.layui.com/',
-//                        target: '_blank'
-                    });
-                },
+                '角色名称：<input name="role_name" type="text"><br>' +
+                '角色说明：<input name="remark" type="text"><br>' +
+                '排序：<input name="rank" type="text"><br>' +
+                '</div>',
                 yes: function(index, layero){
-                    var menu_id = $("input[name='menu_id']").val();
-                    if ( menu_id == '' ) {
+                    var role_pid = $("#role_add").data('id');
+                    if ( role_pid == '' ) {
                         layer.close(index);  // 如果设定了yes回调，需进行手工关闭
-                        layer.msg( '参数丢失，即将返回菜单列表' );
+                        layer.msg( '参数丢失，即将返回角色列表' );
                         setTimeout(function(){
-                            self.location = "{:U('Menu/lists')}";
+                            self.location = "{:U('Role/children_lists')}";
                         },3000)
                     }
 
-                    var power_name = $("input[name='power_name']").val();
-                    if ( power_name == '' ) {
-                        layer.tips('权限名称不能为空', "input[name='power_name']", {
-                            tips: [2, '#3595CC'],
-                            time: 4000
-                        });
-                        return false;
-                    }
-
-                    var type = $("select[name='type']").val();
-                    if ( type == '' ) {
-                        layer.tips('请选择权限类型', "select[name='type']", {
-                            tips: [2, '#3595CC'],
-                            time: 4000
-                        });
-                        return false;
-                    }
-
-                    var mca = $("input[name='mca']").val();
-                    if ( mca == '' ) {
-                        layer.tips('权限MCA不能为空', "input[name='mca']", {
+                    var role_name = $("input[name='role_name']").val();
+                    if ( role_name == '' ) {
+                        layer.tips('角色名称不能为空', "input[name='role_name']", {
                             tips: [2, '#3595CC'],
                             time: 4000
                         });
@@ -143,7 +123,7 @@
 
                     var rank = $("input[name='rank']").val();
                     if ( rank == '' ) {
-                        layer.tips('权限排序不能为空', "input[name='rank']", {
+                        layer.tips('排序不能为空', "input[name='rank']", {
                             tips: [2, '#3595CC'],
                             time: 4000
                         });
@@ -151,15 +131,13 @@
                     }
 
                     var postdata = {};
-                    postdata['menu_id'] = menu_id;
-                    postdata['power_name'] = power_name;
-                    postdata['type'] = type;
-                    postdata['mca'] = mca;
+                    postdata['role_pid'] = role_pid;
+                    postdata['role_name'] = role_name;
                     postdata['remark'] = remark;
                     postdata['rank'] = rank;
 
-                    $.ajax({s
-                        url: "{:U('Power/add')}",
+                    $.ajax({
+                        url: "{:U('Role/add')}",
                         type: 'POST',
                         dataType: 'json',
                         data: postdata,
@@ -171,12 +149,19 @@
                             } else  {
                                 if ( data.status == 2 ) {
                                     layer.close(index);
-                                }
-                                layer.msg( data.info );
-                                if ( data.url != '' ) {
-                                    setTimeout(function(){
-                                        self.location = data.url;
-                                    },3000)
+                                    layer.msg( data.info );
+                                    if ( data.url != '' ) {
+                                        setTimeout(function(){
+                                            self.location = "{:U('Role/children_lists')}";
+                                        },3000)
+                                    }
+                                } else {
+                                    layer.msg( data.info );
+                                    if ( data.url != '' ) {
+                                        setTimeout(function(){
+                                            self.location = data.url;
+                                        },3000)
+                                    }
                                 }
                             }
                         }

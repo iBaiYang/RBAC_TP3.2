@@ -15,15 +15,25 @@ class RoleController extends AdminController
      */
     public function children_lists()
     {
+        // 当前角色id
         $role_pid = trim(I('get.pid','','int'));
         if ( empty($role_pid) ) {
-            $role_pid = 0;
+            $self_role_arr = D('AdminUserRole')->getUserRoleArr( session('admin_user_id') );
+            $role_pid = $self_role_arr['0'];
         }
-
-        $model_role_menu = D('AdminRole');
-        $lists = $model_role_menu->getRoleLists( $role_pid );
-
         $this->assign('role_pid', $role_pid);
+
+        // 角色模型类
+        $model_admin_role = D('AdminRole');
+
+        // 当前角色的父id
+        $back_role_pid = $model_admin_role->getRolePid( $role_pid );
+        $back_role_pid = ( $back_role_pid !== false ) ? $back_role_pid : $role_pid;
+        $this->assign('back_role_pid', $back_role_pid);
+
+        // 角色列表数据
+        $lists = $model_admin_role->getRoleLists( $role_pid );
+
         $this->assign('lists', $lists);
         $this->display();
     }
@@ -38,7 +48,7 @@ class RoleController extends AdminController
             $this->display();
         } else {
             $role_pid = trim(I('post.role_pid','','int'));
-            if ( !empty($role_pid) ) {
+            if ( empty($role_pid) ) {
                 $ajax_data['status'] = 2;
                 $ajax_data['info'] = '参数错误，即将重新载入该页面';
                 $ajax_data['url'] = U('Role/add');

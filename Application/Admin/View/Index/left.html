@@ -30,6 +30,26 @@
             <table cellspacing=0 cellpadding=0 width=150 border=0>
                 <tr height=22>
                     <td style="padding-left: 30px" background="/Public/Admin/img/menu_bt.jpg">
+                        <a class=menuparent onclick="expand(1)" href="javascript:void(0);">超级管理员</a>
+                    </td>
+                </tr>
+                <tr height=4><td></td></tr>
+            </table>
+            <table id="child1" style="display: none" cellspacing=0 cellpadding=0 width=150 border=0>
+                <tr height=20>
+                    <td align=middle width=30>
+                        <img height=9 src="/Public/Admin/img/menu_icon.gif" width=9>
+                    </td>
+                    <td>
+                        <a class="menuchild" href="{:U('Self/user_info')}" target="right">
+                            个人信息
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <table cellspacing=0 cellpadding=0 width=150 border=0>
+                <tr height=22>
+                    <td style="padding-left: 30px" background="/Public/Admin/img/menu_bt.jpg">
                         <a class=menuparent onclick="expand(10)" href="javascript:void(0);">个人中心</a>
                     </td>
                 </tr>
@@ -111,7 +131,7 @@
                         <img height=9 src="/Public/Admin/img/menu_icon.gif" width=9>
                     </td>
                     <td>
-                        <a class="menuchild" href="{:U('Role/lists')}" target="right">
+                        <a class="menuchild" href="{:U('Role/children_lists')}" target="right">
                             角色列表
                         </a>
                     </td>

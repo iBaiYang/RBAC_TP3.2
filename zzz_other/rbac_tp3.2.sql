@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2017-07-21 18:49:43
+Date: 2017-07-22 19:11:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -74,12 +74,20 @@ CREATE TABLE `db_admin_role` (
   `rank` int(2) NOT NULL COMMENT '角色排序',
   PRIMARY KEY (`id`),
   UNIQUE KEY `role_name` (`role_name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员角色表';
 
 -- ----------------------------
 -- Records of db_admin_role
 -- ----------------------------
 INSERT INTO `db_admin_role` VALUES ('1', '1', '0', '超级管理员', '拥有所有权限', '10');
+INSERT INTO `db_admin_role` VALUES ('2', '2', '1', '管理员', '普通管理员', '10');
+INSERT INTO `db_admin_role` VALUES ('3', '3', '2', '总经理', '公司总负责人', '10');
+INSERT INTO `db_admin_role` VALUES ('4', '4', '3', '财务总监', '财务总监', '10');
+INSERT INTO `db_admin_role` VALUES ('5', '4', '3', '行政经理', '行政经理', '20');
+INSERT INTO `db_admin_role` VALUES ('6', '4', '3', '销售经理', '销售经理', '30');
+INSERT INTO `db_admin_role` VALUES ('7', '5', '6', '销售一部', '销售一部', '10');
+INSERT INTO `db_admin_role` VALUES ('8', '5', '6', '销售二部', '销售二部', '20');
+INSERT INTO `db_admin_role` VALUES ('9', '5', '6', '销售三部', '销售三部', '30');
 
 -- ----------------------------
 -- Table structure for db_admin_role_power
@@ -104,16 +112,18 @@ CREATE TABLE `db_admin_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '管理员主键',
   `user_name` varchar(20) NOT NULL COMMENT '用户名',
   `password` varchar(32) NOT NULL COMMENT '密码',
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  `update_time` int(11) NOT NULL COMMENT '更新时间',
   `last_time` int(11) DEFAULT NULL COMMENT '最近登录时间',
   `last_ip` varchar(20) DEFAULT NULL COMMENT '最近登录IP',
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_name` (`user_name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户表';
 
 -- ----------------------------
 -- Records of db_admin_user
 -- ----------------------------
-INSERT INTO `db_admin_user` VALUES ('1', 'admin', '123456', null, null);
+INSERT INTO `db_admin_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', '0', '0', null, null);
 
 -- ----------------------------
 -- Table structure for db_admin_user_power
@@ -139,9 +149,10 @@ CREATE TABLE `db_admin_user_role` (
   `user_id` int(11) NOT NULL COMMENT '管理员用户ID, admin_user表的主键',
   `role_id` int(4) NOT NULL COMMENT '管理员角色id, admin_role表的主键',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户所属角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户所属角色表';
 
 -- ----------------------------
 -- Records of db_admin_user_role
 -- ----------------------------
+INSERT INTO `db_admin_user_role` VALUES ('1', '1', '1');
 SET FOREIGN_KEY_CHECKS=1;
