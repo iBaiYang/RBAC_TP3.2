@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 127.0.0.1
-Source Server Version : 50636
-Source Host           : 127.0.0.1:3306
+Source Server         : localhost
+Source Server Version : 50714
+Source Host           : localhost:3306
 Source Database       : rbac_tp3.2
 
 Target Server Type    : MYSQL
-Target Server Version : 50636
+Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2017-07-22 19:11:51
+Date: 2017-07-23 22:26:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -74,7 +74,7 @@ CREATE TABLE `db_admin_role` (
   `rank` int(2) NOT NULL COMMENT '角色排序',
   PRIMARY KEY (`id`),
   UNIQUE KEY `role_name` (`role_name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员角色表';
 
 -- ----------------------------
 -- Records of db_admin_role
@@ -88,6 +88,7 @@ INSERT INTO `db_admin_role` VALUES ('6', '4', '3', '销售经理', '销售经理
 INSERT INTO `db_admin_role` VALUES ('7', '5', '6', '销售一部', '销售一部', '10');
 INSERT INTO `db_admin_role` VALUES ('8', '5', '6', '销售二部', '销售二部', '20');
 INSERT INTO `db_admin_role` VALUES ('9', '5', '6', '销售三部', '销售三部', '30');
+INSERT INTO `db_admin_role` VALUES ('10', '5', '4', '财务助理', '财务助理', '10');
 
 -- ----------------------------
 -- Table structure for db_admin_role_power
@@ -124,6 +125,7 @@ CREATE TABLE `db_admin_user` (
 -- Records of db_admin_user
 -- ----------------------------
 INSERT INTO `db_admin_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', '0', '0', null, null);
+INSERT INTO `db_admin_user` VALUES ('2', 'admin001', 'e10adc3949ba59abbe56e057f20f883e', '1500819093', '1500819093', null, null);
 
 -- ----------------------------
 -- Table structure for db_admin_user_power
@@ -149,10 +151,11 @@ CREATE TABLE `db_admin_user_role` (
   `user_id` int(11) NOT NULL COMMENT '管理员用户ID, admin_user表的主键',
   `role_id` int(4) NOT NULL COMMENT '管理员角色id, admin_role表的主键',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户所属角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='管理员用户所属角色表';
 
 -- ----------------------------
 -- Records of db_admin_user_role
 -- ----------------------------
 INSERT INTO `db_admin_user_role` VALUES ('1', '1', '1');
+INSERT INTO `db_admin_user_role` VALUES ('2', '2', '2');
 SET FOREIGN_KEY_CHECKS=1;

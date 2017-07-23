@@ -20,9 +20,29 @@ class AdminUserModel extends Model
         if ( empty($data['user_name']) || empty($data['password']) ) {
             return false;
         } else {
-            $data['password'] = md5( $data['password'] );
-            $data['create_time'] = $data['update_time'] = time();
-            $user_id = $this->add( $data );
+            if ( !empty($data['role_id']) ) {
+                $this->startTrans();
+
+                $data['password'] = md5( $data['password'] );
+                $data['create_time'] = $data['update_time'] = time();
+                $user_id = $this->add( $data );
+
+                $data_role['user_id'] = $user_id;
+                $data_role['role_id'] = $data['role_id'];
+                $try2 = M('admin_user_role')->add( $data_role );
+
+                if ( $user_id && $try2 ) {
+                    $this->commit();
+                } else {
+                    $user_id = false;
+                    $this->rollback();
+                }
+            } else {
+                $data['password'] = md5( $data['password'] );
+                $data['create_time'] = $data['update_time'] = time();
+                $user_id = $this->add( $data );
+            }
+
             if ( $user_id ) {
                 return $user_id;
             } else {
@@ -38,7 +58,13 @@ class AdminUserModel extends Model
      */
     public function getUserLists( $map = array() )
     {
-        $data_lists = $this->where( $map )->select();
+        $map['a.id'] = array('gt', 1);
+        $data_lists = $this->alias('a')
+            ->field( 'a.*, c.role_name' )
+            ->join( C('DB_PREFIX').'admin_user_role as b ON a.id = b.user_id' )
+            ->join( C('DB_PREFIX').'admin_role as c ON b.role_id = c.id' )
+            ->where( $map )
+            ->select();
 
         $data_lists = $data_lists ? $data_lists : array();
 

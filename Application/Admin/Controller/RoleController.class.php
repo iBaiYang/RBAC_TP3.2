@@ -15,12 +15,23 @@ class RoleController extends AdminController
      */
     public function children_lists()
     {
-        // 当前角色id
+        // 获取当前角色id
         $role_pid = trim(I('get.pid','','int'));
-        if ( empty($role_pid) ) {
-            $self_role_arr = D('AdminUserRole')->getUserRoleArr( session('admin_user_id') );
-            $role_pid = $self_role_arr['0'];
+
+        // 权限判断及处理
+        $self_role_arr = D('AdminUserRole')->getUserRoleArr( session('admin_user_id') );
+        if ( empty($self_role_arr) ) {
+            $this->error('你尚未被分配角色，请分配角色后再来');
         }
+        if ( empty($role_pid) ) {
+            $role_pid = $self_role_arr['0'];
+        } else {
+            if ( $role_pid < $self_role_arr['0'] ) {
+                $role_pid = $self_role_arr['0'];
+            }
+        }
+
+        // 前端页面赋值role_pid
         $this->assign('role_pid', $role_pid);
 
         // 角色模型类
@@ -33,8 +44,8 @@ class RoleController extends AdminController
 
         // 角色列表数据
         $lists = $model_admin_role->getRoleLists( $role_pid );
-
         $this->assign('lists', $lists);
+
         $this->display();
     }
 

@@ -34,6 +34,9 @@ class SiteController extends Controller
                 $this->error('登录异常，请刷新页面后重新登录');
             } else {
                 session('admin_user_id', $user_info['id'] );
+                if ( $user_info['id'] == 1 ) {
+                    session('admin_user_type', 'super' );
+                }
                 $this->success('登录成功');
             }
         }

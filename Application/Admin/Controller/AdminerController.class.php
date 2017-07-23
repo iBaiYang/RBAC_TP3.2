@@ -53,6 +53,11 @@ class AdminerController extends AdminController
                 $data['password'] = $password;
             }
 
+            $role_id = trim(I('post.role_id','','int'));
+            if ( !empty($role_id) ) {
+                $data['role_id'] = $role_id;
+            }
+
             $model_admin_user = D('AdminUser');
             $user_id = $model_admin_user->userAdd( $data );
             if ( !$user_id ) {

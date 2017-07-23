@@ -20,7 +20,8 @@ class AdminUserRoleModel extends Model
         $data_arr = array();
         if ( !empty($user_id) ) {
             $map['user_id'] = array('eq', $user_id);
-            $data_lists = $this->where( $map )->select();
+            $order = 'id ASC';
+            $data_lists = $this->where( $map )->order( $order )->select();
 
             foreach ( $data_lists as $key => $value )
             {
