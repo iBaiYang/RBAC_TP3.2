@@ -62,7 +62,7 @@
                         <td>{$vo.last_ip}</td>
                         <td>
                             <a data-id="{$vo.id}" class="btn edit">修改</a>
-                            <a data-id="{$vo.id}" class="btn qxgl">权限管理</a>
+                            <a data-id="{$vo.id}" class="btn qxgl">权限</a>
                             <a data-id="{$vo.id}" class="btn delete">删除</a>
                         </td>
                     </tr>
@@ -77,9 +77,46 @@
 <script>
     $(document).ready(function(){
         $('.qxgl').click(function(){
-            var menu_id = $(this).data('id');
-            var children_url = "{:U('Power/children_lists', '', '')}"+'/pid/'+menu_id;
-            self.location = children_url;
+            // 用户id
+            var user_id = $(this).data('id');
+            // 获取用户现有权限
+            $.ajax({
+                url: "{:U('Super/getUserPowerLists')}",
+                type: 'POST',
+                dataType: 'json',
+                data: {user_id:user_id},
+                success:function(data){
+                    if ( data.status == 1 ) {
+                        user_power_lists = data.data;
+                    } else  {
+                        layer.msg( data.info );
+                        return false;
+                    }
+                }
+            });
+
+            // 获取所有权限
+            $.ajax({
+                url: "{:U('Super/getAllPowerLists')}",
+                type: 'POST',
+                dataType: 'json',
+                success:function(data){
+                    if ( data.status == 1 ) {
+                        menu_power_lists = data.data;
+                    } else  {
+                        layer.msg( data.info );
+                        return false;
+                    }
+                }
+            });
+
+            // 组织权限选择代码
+            var content_html = "<div class='main-table clearfix'>";
+            $.each( menu_power_lists, function (index, obj) {
+                alert(content_html);return false;
+            });
+
+
         });
     });
 </script>
