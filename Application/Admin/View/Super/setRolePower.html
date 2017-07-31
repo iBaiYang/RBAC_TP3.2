@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>设定角色权限</title>
+
+    <link href="/Public/Admin/css/mine.css" type="text/css" rel="stylesheet" />
+    <style>
+        .btn {
+            margin: 5px;
+            font-size: 12px;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 30px;
+            border-radius: 4px;
+            background-color: #1b9af7;
+            border-color: #1b9af7;
+            color: #fff;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 300;
+            text-align: center;
+            text-decoration: none;
+            transition-duration: 0.3s;
+            transition-property: all;
+        }
+    </style>
+</head>
+<body>
+    <div class="div_head">
+        <span>
+            <span style="float: left;">当前位置是：超级管理员-》二级角色列表</span>
+            <span style="float: right; margin-right: 8px; font-weight: bold;">
+                <a style="text-decoration: none;" href="#" id="role_add">【添加角色】</a>
+            </span>
+        </span>
+    </div>
+    <div></div>
+    <div style="font-size: 13px; margin: 10px 5px;">
+        <table class="table_a" border="1" width="100%">
+            <tbody>
+                <tr style="font-weight: bold;">
+                    <td>菜单名称</td>
+                    <td>权限名称</td>
+                </tr>
+                <volist name="all_power" id="vo">
+                    <tr>
+                        <td>
+                            <h3>
+                                <input class="checkboxs" value="{$vo.id}" type="checkbox">{$vo.menu_name}
+                            </h3>
+                        </td>
+                        <td>
+                            <volist name="vo['power_lists']" id="vo2">
+                                <input type="checkbox" value="{$vo2.id}">
+                                {$vo2.power_name}
+                            </volist>
+                        </td>
+                    </tr>
+                </volist>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <botton class="btn" id="submit">确认</botton>
+        <botton class="btn">返回</botton>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="/Public/js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="/Public/js/layer/layer.js"></script>
+<script>
+    $(document).ready(function(){
+        // 全选
+        $('.checkboxs').click(function(){
+            if ( $(this).is(":checked") ) {
+                $(this).parents('tr').find('input[type=checkbox]').attr("checked",true);
+            } else {
+                $(this).parents('tr').find('input[type=checkbox]').removeAttr("checked");
+            }
+
+        });
+        $("#submit").click(function(event) {
+            var after = "";
+            $(".table_a input:checkbox:checked").each(function(index, el) {
+                after += $(el).attr('value') + ",";
+            });
+            alert(after);
+//            $("input[name='after']").val(after);
+//            $("#from").submit();
+        });
+
+
+    });
+</script>

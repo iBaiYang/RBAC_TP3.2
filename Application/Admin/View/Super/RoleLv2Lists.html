@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>角色列表</title>
+
+    <link href="/Public/Admin/css/mine.css" type="text/css" rel="stylesheet" />
+    <style>
+        .btn {
+            margin: 5px;
+            font-size: 12px;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 30px;
+            border-radius: 4px;
+            background-color: #1b9af7;
+            border-color: #1b9af7;
+            color: #fff;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 300;
+            text-align: center;
+            text-decoration: none;
+            transition-duration: 0.3s;
+            transition-property: all;
+        }
+    </style>
+</head>
+<body>
+    <div class="div_head">
+        <span>
+            <span style="float: left;">当前位置是：超级管理员-》二级角色列表</span>
+            <span style="float: right; margin-right: 8px; font-weight: bold;">
+                <a style="text-decoration: none;" href="#" id="role_add">【添加角色】</a>
+            </span>
+        </span>
+    </div>
+    <div></div>
+    <div style="font-size: 13px; margin: 10px 5px;">
+        <table class="table_a" border="1" width="100%">
+            <tbody>
+                <tr style="font-weight: bold;">
+                    <td><input id="checkall" value="" type="checkbox">全选</td>
+                    <td>角色名称</td>
+                    <td>父角色名称</td>
+                    <td>角色级别</td>
+                    <td>角色说明</td>
+                    <td>排序</td>
+                    <td align="center">操作</td>
+                </tr>
+                <volist name="lists" id="vo">
+                    <tr>
+                        <td><input class="checkboxs" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.role_name}</td>
+                        <td>{$vo.role_p_name}</td>
+                        <td>{$vo.level}</td>
+                        <td>{$vo.remark}</td>
+                        <td>{$vo.rank}</td>
+                        <td>
+                            <a data-id="{$vo.id}" class="btn edit">修改</a>
+                            <a data-id="{$vo.id}" class="btn power_edit">权限</a>
+                            <a data-id="{$vo.id}" class="btn delete">删除</a>
+                        </td>
+                    </tr>
+                </volist>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="/Public/js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="/Public/js/layer/layer.js"></script>
+<script>
+    $(document).ready(function(){
+        // 添加角色
+        $('#role_add').click(function(){
+            layer.open({
+                type: 1,
+                title: '添加角色',
+                area: ['360px', '268px'], //宽高
+                shade: 0.4,
+                id: 'LAY_layuipro',  // 设定一个id，防止重复弹出
+                resize: true,
+                btn: ['确认', '取消'],
+                btnAlign: 'c',
+                moveType: 1,  // 拖拽模式，0或者1
+                content: '<div style="padding: 20px; line-height: 42px; background-color: #393D49; color: #fff; font-weight: 300;">' +
+                '角色名称：<input name="role_name" type="text"><br>' +
+                '角色说明：<input name="remark" type="text"><br>' +
+                '排序：<input name="rank" type="text"><br>' +
+                '</div>',
+                yes: function(index, layero){
+                    var role_name = $("input[name='role_name']").val();
+                    if ( role_name == '' ) {
+                        layer.tips('角色名称不能为空', "input[name='role_name']", {
+                            tips: [2, '#3595CC'],
+                            time: 4000
+                        });
+                        return false;
+                    }
+
+                    var remark = $("input[name='remark']").val();
+
+                    var rank = $("input[name='rank']").val();
+                    if ( rank == '' ) {
+                        layer.tips('排序不能为空', "input[name='rank']", {
+                            tips: [2, '#3595CC'],
+                            time: 4000
+                        });
+                        return false;
+                    }
+
+                    var postdata = {};
+                    postdata['role_name'] = role_name;
+                    postdata['remark'] = remark;
+                    postdata['rank'] = rank;
+
+                    $.ajax({
+                        url: "{:U('Super/RoleAdd')}",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postdata,
+                        success:function(data){
+                            if ( data.status == 1 ) {
+                                layer.close(index);
+                                layer.msg( '添加成功' );
+                                self.location.reload();
+                            } else  {
+                                layer.msg( data.info );
+                                if ( data.url != '' ) {
+                                    setTimeout(function(){
+                                        self.location = data.url;
+                                    },3000)
+                                }
+                            }
+                        }
+                    });
+                },
+                btn2: function(index, layero){
+                    //按钮【按钮二】的回调
+                    if(confirm('确定要关闭么')){  // 只有当点击confirm框的确定时，该层才会关闭
+                        layer.close(index)
+                    }
+                    return false;
+                },
+                cancel: function(index, layero){
+                    layer.close(index);
+                },
+            });
+        });
+
+        // 编辑角色权限
+        $('.power_edit').click(function(){
+            var role_id = $(this).data("id");
+            var set_role_power_url = "{:U('Super/setRolePower', '', '')}"+'/role_id/'+role_id;
+            self.location = set_role_power_url;
+        });
+    });
+</script>
