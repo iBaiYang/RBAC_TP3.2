@@ -49,12 +49,12 @@
                     <tr>
                         <td>
                             <h3>
-                                <input class="checkboxs" value="{$vo.id}" type="checkbox">{$vo.menu_name}
+                                <input class="checkboxs" type="checkbox" value="{$vo.id}">{$vo.menu_name}
                             </h3>
                         </td>
-                        <td>
+                        <td class="power-ids">
                             <volist name="vo['power_lists']" id="vo2">
-                                <input type="checkbox" value="{$vo2.id}">
+                                <input type="checkbox" value="{$vo2.id}" <eq name="role_power[$vo2['id']]" value="1">checked="checked"</eq>>
                                 {$vo2.power_name}
                             </volist>
                         </td>
@@ -64,8 +64,9 @@
         </table>
     </div>
     <div>
+        <input type="hidden" name="role_id" value="{$role_id}">
         <botton class="btn" id="submit">确认</botton>
-        <botton class="btn">返回</botton>
+        <a class="btn" href="{:U('Super/RoleLv2Lists')}">返回</a>
     </div>
 </body>
 </html>
@@ -80,16 +81,40 @@
             } else {
                 $(this).parents('tr').find('input[type=checkbox]').removeAttr("checked");
             }
-
         });
+        // 提交
         $("#submit").click(function(event) {
-            var after = "";
-            $(".table_a input:checkbox:checked").each(function(index, el) {
-                after += $(el).attr('value') + ",";
+            var power_ids = "";
+            $(".table_a .power-ids input:checkbox:checked").each(function(index, el) {
+                power_ids += $(el).attr('value') + ",";
             });
-            alert(after);
-//            $("input[name='after']").val(after);
-//            $("#from").submit();
+            var role_id = $("input[name='role_id']").val();
+
+            var postdata = {};
+            postdata['role_id'] = role_id;
+            postdata['power_ids'] = power_ids;
+
+            $.ajax({
+                url: "{:U('Super/setRolePower')}",
+                type: 'POST',
+                dataType: 'json',
+                data: postdata,
+                success:function(data){
+                    if ( data.status == 1 ) {
+                        layer.msg( data.info );
+                        setTimeout(function(){
+                            self.location = "{:U('Super/RoleLv2Lists')}";
+                        },2000);
+                    } else {
+                        layer.msg( data.info );
+                        if ( data.url != '' ) {
+                            setTimeout(function(){
+                                self.location = data.url;
+                            },2000);
+                        }
+                    }
+                }
+            })
         });
 
 

@@ -85,22 +85,34 @@ class SuperController extends Controller
      */
     public function setRolePower()
     {
-        $role_id = trim(I('get.role_id','','int'));
+        $role_id = trim(I('param.role_id','','int'));
         if ( !$role_id ) {
             $this->error('未选择角色');
         }
 
         if ( !$_POST ) {
             // 获取角色现有权限
-            $role_power_arr = $this->getRolePowerLists( $role_id );var_dump($role_power_arr);
+            $role_power_arr = $this->getRolePowerLists( $role_id );
             $this->assign('role_power', $role_power_arr);
             // 获取所有权限
-            $all_power_lists = $this->getAllPowerLists();var_dump($all_power_lists);
+            $all_power_lists = $this->getAllPowerLists();
             $this->assign('all_power', $all_power_lists);
 
+            $this->assign('role_id', $role_id);
             $this->display();
         } else {
+            $power_ids = trim(I('post.power_ids','','string'));
+            $power_arr = explode(',', $power_ids);
+            array_pop($power_arr);  // 去除最后一个空元素
 
+            $model_admin_role_power = M('admin_role_power');
+            // 删除角色原有权限
+            $try_1 = $model_admin_role_power->where( 'role_id = '.$role_id )->delete();
+            // 新增角色权限
+            foreach ( $power_arr as $key => $value ) {
+                $model_admin_role_power->add(['role_id'=>$role_id, 'power_id'=>$value]);
+            }
+            $this->success('角色权限修改成功');
         }
     }
 
