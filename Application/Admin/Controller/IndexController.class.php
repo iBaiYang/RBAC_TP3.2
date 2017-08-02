@@ -59,6 +59,12 @@ class IndexController extends AdminController
 
         $this -> assign('pauth_info',$p_info);
         $this -> assign('sauth_info',$s_info);*/
+        if ( session('admin_user_type') === 'super' ) {
+
+        } else {
+
+        }
+
         $this->display();
     }
 

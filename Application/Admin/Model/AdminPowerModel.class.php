@@ -72,4 +72,20 @@ class AdminPowerModel extends Model
 
         return $data_lists;
     }
+
+    /**
+     * 获取mca的权限id
+     * @param string $mca
+     * @return bool|mixed
+     */
+    public function getPowerId( $mca = '' )
+    {
+        if ( !$mca ) {
+            return false;
+        }
+
+        $power_id = $this->where( "mca = '".$mca."'" )->getField( 'id' );
+
+        return $power_id;
+    }
 }

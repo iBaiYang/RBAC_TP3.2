@@ -16,16 +16,35 @@ class AdminController extends Controller
      */
     public function __construct()
     {
-        //先执行父类的构造方法，否则系统要报错
-        //因为原先的构造方法默认是被执行的
+        // 先执行父类的构造方法，否则系统要报错
+        // 因为原先的构造方法默认是被执行的
         parent::__construct();
 
         // 判断是否登录
         if ( empty(session('admin_user_id')) ) {
             $this->error('请先登录', U("Site/login"));
         }
-        
-        
+
+        // 权限访问控制，主要逻辑，判断当前mca是否在用户的权限组中
+        // 思路一：
+        // 思路二：
+
+        // 当前请求操作
+        $now_mca = MODULE_NAME."-".CONTROLLER_NAME."-".ACTION_NAME;
+        $now_mca = strtolower($now_mca);
+
+        if ( !in_array( $now_mca, ['admin-index-index', 'admin-index-top', 'admin-index-left', 'admin-index-right'] ) ) {
+            // 获取当前mca操作的权限id
+            $power_id = D('AdminPower')->getPowerId( $now_mca );
+
+            // 获取当前用户可操作的所有权限id
+            $adminer_power_lists = D('AdminUserPower')->getUserPowerArr( session('admin_user_id') );
+            // 判断当前mca是否在用户可操作的权限中
+            if ( !in_array( $power_id, $adminer_power_lists ) ) {
+                $this -> error('没有权限访问', U("Index/right"));
+            }
+        }
+
         /*//CONTROLLER_NAME ---Goods
         //ACTION_NAME  ----showlist
         //当前请求操作

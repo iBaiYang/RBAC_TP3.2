@@ -76,6 +76,13 @@
 <script type="text/javascript" src="/Public/js/layer/layer.js"></script>
 <script>
     $(document).ready(function(){
+        // 编辑角色权限
+        $('.power_edit').click(function(){
+            var role_id = $(this).data("id");
+            var set_role_power_url = "{:U('Role/setRolePower', '', '')}"+'/role_id/'+role_id;
+            self.location = set_role_power_url;
+        });
+
         // 子角色管理
         $('.sonlists').click(function(){
             var role_id = $(this).data('id');

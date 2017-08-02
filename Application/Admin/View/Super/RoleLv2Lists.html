@@ -59,9 +59,9 @@
                         <td>{$vo.remark}</td>
                         <td>{$vo.rank}</td>
                         <td>
-                            <a data-id="{$vo.id}" class="btn edit">修改</a>
+                            <a data-id="{$vo.id}" class="btn role_edit">修改</a>
                             <a data-id="{$vo.id}" class="btn power_edit">权限</a>
-                            <a data-id="{$vo.id}" class="btn delete">删除</a>
+                            <a data-id="{$vo.id}" class="btn role_delete">删除</a>
                         </td>
                     </tr>
                 </volist>
@@ -148,6 +148,105 @@
                 cancel: function(index, layero){
                     layer.close(index);
                 },
+            });
+        });
+
+        // 添加角色请求
+        $('.role_edit').click(function(){
+            var role_id = $(this).data("id");
+
+            var postdata = {};
+            postdata['role_id'] = role_id;
+            postdata['do'] = 'get';
+
+            $.ajax({
+                url: "{:U('Super/RoleEdit')}",
+                type: 'POST',
+                dataType: 'json',
+                data: postdata,
+                success:function(data){
+                    if ( data.status == 1 ) {
+                        layer.open({
+                            type: 1,
+                            title: '修改角色',
+                            area: ['360px', '268px'], //宽高
+                            shade: 0.4,
+                            id: 'LAY_layuipro',  // 设定一个id，防止重复弹出
+                            resize: true,
+                            btn: ['确认', '取消'],
+                            btnAlign: 'c',
+                            moveType: 1,  // 拖拽模式，0或者1
+                            content: '<div style="padding: 20px; line-height: 42px; background-color: #393D49; color: #fff; font-weight: 300;"><input name="role_id" type="hidden" value="' + role_id + '">' +
+                            '角色名称：<input name="role_name" type="text" value="' + data.data.role_name + '"><br>' +
+                            '角色说明：<input name="remark" type="text" value="' + data.data.remark + '"><br>' +
+                            '排序：<input name="rank" type="text" value="' + data.data.rank + '"><br>' +
+                            '</div>',
+                            yes: function(index, layero){
+                                var role_id = $("input[name='role_id']").val();
+
+                                var role_name = $("input[name='role_name']").val();
+                                if ( role_name == '' ) {
+                                    layer.tips('角色名称不能为空', "input[name='role_name']", {
+                                        tips: [2, '#3595CC'],
+                                        time: 4000
+                                    });
+                                    return false;
+                                }
+
+                                var remark = $("input[name='remark']").val();
+
+                                var rank = $("input[name='rank']").val();
+                                if ( rank == '' ) {
+                                    layer.tips('排序不能为空', "input[name='rank']", {
+                                        tips: [2, '#3595CC'],
+                                        time: 4000
+                                    });
+                                    return false;
+                                }
+
+                                var postdata = {};
+                                postdata['role_id'] = role_id;
+                                postdata['role_name'] = role_name;
+                                postdata['remark'] = remark;
+                                postdata['rank'] = rank;
+                                postdata['do'] = 'save';
+
+                                $.ajax({
+                                    url: "{:U('Super/RoleEdit')}",
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    data: postdata,
+                                    success:function(data){
+                                        if ( data.status == 1 ) {
+                                            layer.close(index);
+                                            layer.msg( '添加成功' );
+                                            self.location.reload();
+                                        } else  {
+                                            layer.msg( data.info );
+                                            if ( data.url != '' ) {
+                                                setTimeout(function(){
+                                                    self.location = data.url;
+                                                },3000)
+                                            }
+                                        }
+                                    }
+                                });
+                            },
+                            btn2: function(index, layero){
+                                //按钮【按钮二】的回调
+                                if(confirm('确定要关闭么')){  // 只有当点击confirm框的确定时，该层才会关闭
+                                    layer.close(index)
+                                }
+                                return false;
+                            },
+                            cancel: function(index, layero){
+                                layer.close(index);
+                            },
+                        });
+                    } else  {
+                        layer.msg( data.info );
+                    }
+                }
             });
         });
 

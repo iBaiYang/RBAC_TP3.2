@@ -66,7 +66,7 @@
     <div>
         <input type="hidden" name="role_id" value="{$role_id}">
         <botton class="btn" id="submit">确认</botton>
-        <a class="btn" href="{:U('Super/RoleLv2Lists')}">返回</a>
+        <a class="btn" href="{:U('Role/children_lists')}">返回</a>
     </div>
 </body>
 </html>
@@ -95,7 +95,7 @@
             postdata['power_ids'] = power_ids;
 
             $.ajax({
-                url: "{:U('Super/setRolePower')}",
+                url: "{:U('Role/setRolePower')}",
                 type: 'POST',
                 dataType: 'json',
                 data: postdata,
@@ -103,7 +103,7 @@
                     if ( data.status == 1 ) {
                         layer.msg( data.info );
                         setTimeout(function(){
-                            self.location = "{:U('Super/RoleLv2Lists')}";
+                            self.location = data.url
                         },2000);
                     } else {
                         layer.msg( data.info );

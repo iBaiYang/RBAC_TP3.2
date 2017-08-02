@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-    <title>设定角色权限</title>
+    <title>设定管理员权限</title>
 
     <link href="/Public/Admin/css/mine.css" type="text/css" rel="stylesheet" />
     <style>
@@ -31,9 +31,9 @@
 <body>
     <div class="div_head">
         <span>
-            <span style="float: left;">当前位置是：超级管理员-》二级角色列表</span>
+            <span style="float: left;">当前位置是：超级管理员-》管理员列表</span>
             <span style="float: right; margin-right: 8px; font-weight: bold;">
-                <a style="text-decoration: none;" href="#" id="role_add">【添加角色】</a>
+                <a style="text-decoration: none;" href="#" id="role_add">【添加管理员】</a>
             </span>
         </span>
     </div>
@@ -54,7 +54,7 @@
                         </td>
                         <td class="power-ids">
                             <volist name="vo['power_lists']" id="vo2">
-                                <input type="checkbox" value="{$vo2.id}" <eq name="role_power[$vo2['id']]" value="1">checked="checked"</eq>>
+                                <input type="checkbox" value="{$vo2.id}" <eq name="adminer_power[$vo2['id']]" value="1">checked="checked"</eq>>
                                 {$vo2.power_name}({$vo2.mca})
                             </volist>
                         </td>
@@ -64,7 +64,7 @@
         </table>
     </div>
     <div>
-        <input type="hidden" name="role_id" value="{$role_id}">
+        <input type="hidden" name="adminer_id" value="{$adminer_id}">
         <botton class="btn" id="submit">确认</botton>
         <a class="btn" href="{:U('Super/RoleLv2Lists')}">返回</a>
     </div>
@@ -88,14 +88,14 @@
             $(".table_a .power-ids input:checkbox:checked").each(function(index, el) {
                 power_ids += $(el).attr('value') + ",";
             });
-            var role_id = $("input[name='role_id']").val();
+            var adminer_id = $("input[name='adminer_id']").val();
 
             var postdata = {};
-            postdata['role_id'] = role_id;
+            postdata['adminer_id'] = adminer_id;
             postdata['power_ids'] = power_ids;
 
             $.ajax({
-                url: "{:U('Super/setRolePower')}",
+                url: "{:U('Super/setAdminerPower')}",
                 type: 'POST',
                 dataType: 'json',
                 data: postdata,
@@ -103,7 +103,7 @@
                     if ( data.status == 1 ) {
                         layer.msg( data.info );
                         setTimeout(function(){
-                            self.location = "{:U('Super/RoleLv2Lists')}";
+                            self.location = "{:U('Super/AdminLv2Lists')}";
                         },2000);
                     } else {
                         layer.msg( data.info );
@@ -116,7 +116,5 @@
                 }
             })
         });
-
-
     });
 </script>

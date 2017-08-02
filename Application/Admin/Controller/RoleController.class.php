@@ -98,12 +98,40 @@ class RoleController extends AdminController
     /**
      * 权限修改
      */
-    public function edit()
+    public function setRolePower()
     {
+        $role_id = trim(I('param.role_id','','int'));
+        if ( !$role_id ) {
+            $this->error('未选择角色');
+        }
+
         if ( !$_POST ) {
+            // 获取角色现有权限
+            $role_power_arr = D('AdminRolePower')->getRolePowerLists( $role_id );
+            $this->assign('role_power', $role_power_arr);
+            // 获取所有权限
+            $all_power_lists = D('AdminUserPower')->getUserMenuPowerLists( session('admin_user_id') );
+            $this->assign('all_power', $all_power_lists);
+
+            $this->assign('role_id', $role_id);
             $this->display();
         } else {
+            $power_ids = trim(I('post.power_ids','','string'));
+            $power_arr = explode(',', $power_ids);
+            array_pop($power_arr);  // 去除最后一个空元素
 
+            // 设定角色权限
+            $result = D('AdminRolePower')->setRolePower( $role_id, $power_arr );
+
+            if ( $result ) {
+                // 组装跳回地址
+                $role_info = D('AdminRole')->getRoleInfo( $role_id );
+                $jump_url = U('Role/children_lists', ['pid'=>$role_info['role_pid']] );
+
+                $this->success('角色权限修改成功', $jump_url);
+            } else {
+                $this->error('角色权限修改失败');
+            }
         }
     }
 

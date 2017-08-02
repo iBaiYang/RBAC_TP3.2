@@ -131,6 +131,42 @@ class AdminRoleModel extends Model
         return $data_lists;
     }
 
+    /**
+     * 角色详情
+     * @param $role_id
+     * @return mixed
+     */
+    public function getRoleInfo( $role_id )
+    {
+        $map['id'] = array('eq', $role_id);
+        $data_info = $this->where( $map )->find();
+        return $data_info;
+    }
+
+    /**
+     * 角色信息修改
+     * @param array $data
+     * @return bool|mixed
+     */
+    public function roleEdit( $data = array() )
+    {
+        if ( empty($data) || empty($data['role_pid']) ) {
+            return false;
+        } else {
+            $p_level = $this->getRoleLevel( $data['role_pid'] );
+            if ( !$p_level ) {
+                return false;
+            }
+            $data['level'] = $p_level + 1;
+
+            $result = $this->save( $data );
+            if ( $result ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
 
 

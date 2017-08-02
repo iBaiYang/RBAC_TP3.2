@@ -70,12 +70,65 @@ class SuperController extends Controller
                 $data['rank'] = $rank;
             }
 
-            $model_role_menu = D('AdminRole');
-            $power_id = $model_role_menu->roleAdd( $data );
+            $model_role = D('AdminRole');
+            $power_id = $model_role->roleAdd( $data );
             if ( !$power_id ) {
                 $this->error('角色添加失败，请重新提交');
             } else {
                 $this->success('角色添加成功');
+            }
+        }
+    }
+
+    /**
+     * 角色修改
+     */
+    public function RoleEdit()
+    {
+        $role_id = trim(I('post.role_id','','int'));
+        $post_do = trim(I('post.do','','string'));
+        if ( $post_do == 'get' ) {
+            $model_role = D('AdminRole');
+            $role_info = $model_role->getRoleInfo( $role_id );
+
+            $data['status'] = 1;
+            $data['info'] = '获取成功';
+            $data['data'] = $role_info;
+
+            $this->ajaxReturn( $data );
+        } elseif ( $post_do == 'save' ) {
+            $data['role_pid'] = 1;
+
+            $role_id = trim(I('post.role_id','','string'));
+            if ( empty($role_id) ) {
+                $this->error('角色id不能为空');
+            } else {
+                $data['id'] = $role_id;
+            }
+
+            $role_name = trim(I('post.role_name','','string'));
+            if ( empty($role_name) ) {
+                $this->error('角色名称不能为空');
+            } else {
+                $data['role_name'] = $role_name;
+            }
+
+            $remark = trim(I('post.remark','','string'));
+            $data['remark'] = $remark ? $remark : '';
+
+            $rank = trim(I('post.rank','','int'));
+            if ( empty($rank) ) {
+                $this->error('排序不能为空');
+            } else {
+                $data['rank'] = $rank;
+            }
+
+            $model_role_menu = D('AdminRole');
+            $result = $model_role_menu->roleEdit( $data );
+            if ( !$result ) {
+                $this->error('角色修改失败，请重新提交');
+            } else {
+                $this->success('角色修改成功');
             }
         }
     }
@@ -170,20 +223,62 @@ class SuperController extends Controller
         $this->display();
     }
 
-    public function getUserPowerLists()
+    /**
+     * 设定管理员权限
+     */
+    public function setAdminerPower()
     {
-        $user_id = trim(I('post.user_id', '', 'int'));
-        if ( empty($user_id) ) {
-            $this->error('页面错误，请刷新页面后重新操作');
+        $adminer_id = trim(I('param.adminer_id','','int'));
+        if ( !$adminer_id ) {
+            $this->error('未选择管理员');
         }
 
-        $power_lists = M('admin_user_power')->where( 'user_id = '.$user_id )->select();
+        if ( !$_POST ) {
+            // 获取角色现有权限
+            $role_power_arr = $this->getAdminerPowerLists( $adminer_id );
+            $this->assign('adminer_power', $role_power_arr);
+            // 获取所有权限
+            $all_power_lists = $this->getAllPowerLists();
+            $this->assign('all_power', $all_power_lists);
 
-        $data['status'] = 1;
-        $data['info'] = '获取成功';
-        $data['data'] = $power_lists;
+            $this->assign('adminer_id', $adminer_id);
+            $this->display();
+        } else {
+            $power_ids = trim(I('post.power_ids','','string'));
+            $power_arr = explode(',', $power_ids);
+            array_pop($power_arr);  // 去除最后一个空元素
 
-        $this->ajaxReturn( $data );
+            $model_admin_user_power = M('admin_user_power');
+            // 删除角色原有权限
+            $try_1 = $model_admin_user_power->where( 'user_id = '.$adminer_id )->delete();
+            // 新增角色权限
+            foreach ( $power_arr as $key => $value ) {
+                $model_admin_user_power->add(['user_id'=>$adminer_id, 'power_id'=>$value]);
+            }
+            $this->success('管理员权限修改成功');
+        }
+    }
+
+    /**
+     * 获取相应管理员权限的列表
+     * @param $adminer_id
+     * @return array
+     */
+    public function getAdminerPowerLists( $adminer_id )
+    {
+        if ( empty($adminer_id) ) {
+            return [];
+        }
+
+        // 获取权限
+        $power_lists = M('admin_user_power')->where( 'user_id = '.$adminer_id )->order( 'power_id ASC' )->select();
+        // 处理为一维数组
+        foreach ( $power_lists as $key => $value )
+        {
+            $power_arr[$value['power_id']] = 1;
+        }
+
+        return $power_arr;
     }
 
 
